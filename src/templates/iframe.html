@@ -1,0 +1,28 @@
+<!-- <%= htmlWebpackPlugin.options.warning %> -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <% _.forEach(htmlWebpackPlugin.options.vendorCss, function(css) { %>
+    <link href="<%= css %>" rel="stylesheet" />
+    <% }); %>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/0f0d9e5e81.js"></script>
+  </head>
+  <body>
+    <section data-main class="main">
+      <img class="loader" src="spinner.gif" />
+      <div class="webaccess"></div>
+    </section>
+    <% _.forEach(htmlWebpackPlugin.options.vendorJs, function(js) { %><script
+      type="text/javascript"
+      src="<%= js %>"
+    ></script
+    ><% }); %>
+  </body>
+</html>

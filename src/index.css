@@ -1,0 +1,82 @@
+.loader {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+}
+.main {
+  margin-right: 10px;
+}
+footer {
+  font-size: 10px;
+  padding-top: 20px;
+}
+.data {
+  color: #363;
+  padding-left: 6px;
+}
+#content td {
+  font-size: 12px;
+  padding-top: 2px;
+}
+.card .card-header {
+  font-size: 12px !important;
+}
+.avatar {
+  vertical-align: middle;
+  width: 70px;
+  height: 70px;
+  max-width: 70px !important;
+  border-radius: 50%;
+  object-fit: cover;
+}
+span {
+  font-size: 13px;
+}
+span.info-name {
+  font-size: 15px !important;
+  font-weight: bold;
+}
+.customer-info .col-2 {
+  padding: 0 !important;
+}
+.customer-info .col-3 {
+  padding-right: 0 !important;
+  padding-left: 6px !important;
+}
+button {
+  font-size: 8px !important;
+}
+div.loading {
+  position: relative;
+  height: 400px;
+  background: #f2f2f240;
+}
+embed.loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.header-righ {
+  float: right;
+}
+.header-righ i:first-child {
+  margin-right: 20px;
+}
+.card {
+  border-bottom: none;
+  border-radius: 0;
+  /* border-bottom-right-radius: 0; */
+  /* border-bottom-left-radius: 0; */
+  margin-bottom: -1px;
+}
+.web-accessed .accessed-first,
+.accessed-last {
+  font-size: 10px;
+}
+.c-tag.c-tag--pill.c-tag--lg span {
+  font-size: 10px;
+}
