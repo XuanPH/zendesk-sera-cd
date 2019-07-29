@@ -13,11 +13,38 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/0f0d9e5e81.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://emn178.github.io/chartjs-plugin-labels/src/chartjs-plugin-labels.js"
+    ></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
   </head>
   <body>
     <section data-main class="main">
-      <img class="loader" src="spinner.gif" />
-      <div class="webaccess"></div>
+      <div id="popup_create" class="popup popup_create">
+        <div class="popup_content"></div>
+      </div>
+      <div id="popup_filter" class="popup popup_filter">
+        <div class="popup_content"></div>
+      </div>
+      <img class="loader" src="dots.gif" />
+      <div class="customer_care_info"></div>
+      <div class="digital_source_info"></div>
+      <div class="web_access"></div>
+      <div class="interaction_history"></div>
     </section>
     <% _.forEach(htmlWebpackPlugin.options.vendorJs, function(js) { %><script
       type="text/javascript"

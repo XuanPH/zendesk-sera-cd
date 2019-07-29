@@ -56,8 +56,8 @@
     "webpack-cli": "^3.0.8"
   },
   "dependencies": {
-    "boostrap": "^2.0.0",
-    "chart.js": "^2.8.0",
-    "lodash": "^4.17.15"
+    "jquery": "^3.4.1",
+    "lodash": "^4.17.15",
+    "select2": "^4.0.8"
   }
 }

@@ -1,53 +1,87 @@
-/**
- *  Example app
- **/
-
 import I18n from '../../javascripts/lib/i18n'
 import { resizeContainer, render } from '../../javascripts/lib/helpers'
-import getCustomerInfoTemplate from '../../templates/customer_info';
-import getWebAccessed from '../../templates/web_accessed';
-import Chart from 'chart.js';
-
+import { renderCustomerInfo, openModalType, initCustomerInfoFunction } from '../../templates/customer_info';
+import { renderWebAccessed, initWebAccessedFunction } from '../../templates/web_accessed';
+import { renderCustomerCareInfo, initCustomerCreateInfoFunction } from '../../templates/customer_care_info'
+import { renderDSI, initDSIFunction } from '../../templates/digital_source_info'
+import { renderPopupCreateType, renderPopupFilter, initPopupFilterFunction, initPopupCreateFunction } from '../../templates/modal/popup'
+import { renderInterationHistory, initInteractionHistoryFunction } from '../../templates/interation-history'
+import { renderNotFound, initNotFoundFunction } from '../../templates/not_found';
 const MAX_HEIGHT = 5000
 const API_ENDPOINTS = {
   organizations: '/api/v2/organizations.json'
 }
 
 class App {
-  constructor(client, appData) {
+  constructor(client, appData, location) {
     this._client = client
     this._appData = appData
-
-    this.states = {}
-
-    // this.initializePromise is only used in testing
-    // indicate app initilization(including all async operations) is complete
+    this.o2oToken = appData.metadata.settings["O2O-Token"]
+    this.states = {
+      location: location
+    }
     this.initializePromise = this.init()
+    this.initWebAccessedFunction = initWebAccessedFunction.bind(this);
+    this._handleDataUserTicket = this._handleDataUserTicket.bind(this);
   }
-
   /**
    * Initialize module, render main template
    */
   async init() {
     const currentUser = (await this._client.get('currentUser')).currentUser
     this.states.currentUserName = currentUser.name
-
-    I18n.loadTranslations(currentUser.locale)
+    I18n.loadTranslations(currentUser.locale);
 
     const organizations = await this._client
       .request(API_ENDPOINTS.organizations)
       .catch(this._handleError.bind(this))
 
-    const ticketInfo = (await this._client.get('ticket'));
+
+    this._client.on('ticket.save', function () {
+      console.log('ticket on saved');
+      return false;
+    });
+
+
+
+    const dataUser = await this._handleDataUserTicket();
+    const isMaintain = true;
     // const assignedInfo = (await this._client.get('user'))
-    if (ticketInfo) {
-      render('.loader', getCustomerInfoTemplate(ticketInfo), () => {
-        document.getElementById('createTicket').addEventListener('click', this._openModal.bind(this));
+    if (dataUser && this.o2oToken && !isMaintain) {
+      render('loader', renderCustomerInfo(dataUser), () => {
+        // document.getElementById('openTypeCreate1').addEventListener('click', openModalType.bind(this));
+        initCustomerInfoFunction(this._client);
       });
-      render('.webaccess', getWebAccessed(ticketInfo), () => {
-        this._initChart();
+
+      render('customer_care_info', renderCustomerCareInfo(dataUser), () => {
+        initCustomerCreateInfoFunction(this._client);
       });
+
+      render('digital_source_info', renderDSI(dataUser), () => {
+        initDSIFunction(this._client);
+      });
+
+      render('web_access', renderWebAccessed(dataUser), () => {
+        this.initWebAccessedFunction();
+      });
+
+      render('interaction_history', renderInterationHistory(), () => {
+        initInteractionHistoryFunction(this._client);
+      });
+
+      render('popup_create .popup_content', renderPopupCreateType(), () => {
+        initPopupCreateFunction(this._client);
+      });
+
+      render('popup_filter .popup_content', renderPopupFilter(), () => {
+        initPopupFilterFunction(this._client);
+      });
+
       return resizeContainer(this._client, MAX_HEIGHT, true)
+    } else {
+      render('loader', renderNotFound(), () => {
+        initNotFoundFunction();
+      });
     }
   }
 
@@ -59,61 +93,12 @@ class App {
     console.log('An error is handled here: ', error.message)
   }
 
-
-  _openModal() {
-    let self = this;
-    return self._client.invoke('instances.create', {
-      location: 'modal',
-      url: 'assets/iframe.html',
-      size: {
-        width: '800px',
-        height: '300px'
-      }
-    }).then(function (modalContext) {
-      var instanceGuid = modalContext['instances.create'][0].instanceGuid;
-      self._client.instance(instanceGuid);
-    });
+  async _handleDataUserTicket() {
+    switch (this.states.location) {
+      case 'ticket_sidebar': return (await this._client.get('ticket')).ticket.requester; break; //ticket location
+      case 'user_sidebar': return (await this._client.get('user')).user; break; //ticket location
+    }
   }
-
-  _initChart() {
-    Chart.defaults.global.defaultFontColor = '#000000';
-    Chart.defaults.global.defaultFontFamily = 'Arial';
-    var lineChart = document.getElementById("myChart");
-    var myChart = new Chart(lineChart, {
-      type: 'line',
-      data: {
-        labels: ["27 June", "29 June", "01 July", "03 July"],
-        datasets: [
-          {
-            label: '#Visit times',
-            data: [80, 30, 63, 20],
-            backgroundColor: 'rgba(0, 0, 0, 0)',
-            borderColor: 'rgba(0, 128, 128, 0.7)',
-            borderWidth: 3,
-          }
-        ]
-      },
-      options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              display: false
-            }
-          }]
-        },
-        legend: {
-          display: true,
-          position: 'top',
-          labels: {
-            filter: function (item, chart) {
-              // Logic to remove a particular legend item goes here
-              return item.text == null || !item.text.includes('label to remove');
-            }
-          }
-        }
-      }
-    });
-  };
 }
 
 export default App

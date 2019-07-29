@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -25,10 +26,11 @@ const zendeskGardenJsDelivrUrl = (function () {
 
 const externalAssets = {
   css: [
-    zendeskGardenJsDelivrUrl
+    zendeskGardenJsDelivrUrl,
   ],
   js: [
-    'https://assets.zendesk.com/apps/sdk/2.0/zaf_sdk.js'
+    'https://assets.zendesk.com/apps/sdk/2.0/zaf_sdk.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js'
   ]
 }
 
@@ -38,7 +40,6 @@ module.exports = {
       'babel-polyfill',
       './src/javascripts/locations/ticket_sidebar.js',
       './src/index.css',
-      './src/javascripts/lib/chart-config.js'
     ]
   },
   output: {
@@ -58,7 +59,7 @@ module.exports = {
         use: './webpack/translations-loader'
       },
       {
-        test: /\.(sa|sc|c)ss$/,
+        test: /\.(sass|scss|css|png|woff|woff2|eot|ttf|svg)$/,
         use: [
           MiniCssExtractPlugin.loader,
           { loader: 'css-loader', options: { url: false } },
@@ -74,7 +75,10 @@ module.exports = {
 
     //
     new webpack.ProvidePlugin({
-      _: 'lodash'
+      _: 'lodash',
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
     }),
 
     // Copy over static assets
