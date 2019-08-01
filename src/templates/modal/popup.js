@@ -1,5 +1,15 @@
-import { addEventClickToElement, resizeContainer } from '../../javascripts/lib/helpers';
+import { addEventClickToElement, resizeContainer, templatingLoop, render, setLocalStorage, getLocalStorage } from '../../javascripts/lib/helpers';
+import { filterItem } from '../../api/o2oApi'
 // render function
+
+export function renderItemFilter(item) {
+  return ` <div class="row pointer item" data-filter_type='${item.value}'>
+                <div class="col-10"> ${item.text}</div>
+                <div class="col-1">${item.checked ? `<i class="fas fa-check">` : ''}</i></div>
+              </div>
+              <hr/>`
+}
+
 export function renderPopupCreateType() {
   return `<div class="card">
             <h5 class="card-header">
@@ -21,6 +31,7 @@ export function renderPopupCreateType() {
 }
 
 export function renderPopupFilter() {
+  var filters = filterItem();
   return `<div class="card">
             <h5 class="card-header">
               Filter
@@ -29,36 +40,7 @@ export function renderPopupFilter() {
               </div>
             </h5>
             <div class="card-body">
-              <div class="row pointer item">
-                <div class="col-10"> All interaction</div>
-                <div class="col-1"><i class="fas fa-check"></i></div>
-              </div>
-              <hr/>
-              <div class="row pointer item">
-                <div class="col-10"> Changes care status</div>
-                <div class="col-1"><i class="fas fa-check"></i></div>
-              </div>
-               <hr/>
-              <div class="row pointer item">
-                <div class="col-10"> Social interactions</div>
-                <div class="col-1"><i class="fas fa-check"></i></div>
-              </div>
-               <hr/>
-              <div class="row pointer item">
-                <div class="col-10"> Call logs</div>
-                <div class="col-1"><i class="fas fa-check"></i></div>
-              </div>
-               <hr/>
-              <div class="row pointer item">
-                <div class="col-10"> SMS</div>
-                <div class="col-1"><i class="fas fa-check"></i></div>
-              </div>
-               <hr/>
-              <div class="row pointer item">
-                <div class="col-10"> Offline touched point</div>
-                <div class="col-1"><i class="fas fa-check"></i></div>
-              </div>
-               <hr/>
+              ${templatingLoop(filters, renderItemFilter)}
               <div class="row pointer">
                 <div class="col-6">
                   <button type="button" class="btn btn-secondary btn-md" id='cancel'>Cancel</button>
@@ -73,7 +55,6 @@ export function renderPopupFilter() {
 
 // trigger function
 export function triggerOpenPopupCreate(obj, isShow, _client, defaultOffsetPlus = 30, defaultClosest = 'div.card') {
-  debugger;
   var target = $(obj.target);
   var offsetTopEl = target.closest(defaultClosest)[0].offsetTop;
   if (isShow) {
@@ -84,7 +65,6 @@ export function triggerOpenPopupCreate(obj, isShow, _client, defaultOffsetPlus =
   }
   let elHeight = (offsetTopEl + target.closest('div.card').width());
   resizeContainer(_client, elHeight, !isShow);
-  console.log(offsetTopEl)
 }
 
 export function triggerOpenPopupFilter(obj, isShow, _client, offsetPSubstract = 40) {
@@ -92,23 +72,38 @@ export function triggerOpenPopupFilter(obj, isShow, _client, offsetPSubstract = 
   if (isShow) {
     document.getElementsByClassName('popup_filter')[0].style.display = "block"
     $(".popup_filter .card").offset({ top: offsetTopEl - offsetPSubstract });
+    setLocalStorage('filter_top', offsetTopEl - offsetPSubstract);
   } else {
     document.getElementsByClassName('popup_filter')[0].style.display = "none"
   }
   let elHeight = (offsetTopEl + $(obj.target).closest('div.card').width());
   resizeContainer(_client, elHeight, !isShow);
 }
+
+
 // init function
 export function initPopupFilterFunction(_client) {
   addEventClickToElement('.popup_filter .fa-times,#cancel', (e) => { triggerOpenPopupFilter(e, false, _client) });
-  addEventClickToElement('.popup_filter .item', (e) => { triggerOpenPopupFilter(e, false, _client); });
+  addEventClickToElement('.popup_filter .item', (e) => {
+    var filter_type = $(e.target).closest('.item').data().filter_type;
+    var currentFilterAction = filterItem();
+    currentFilterAction.map((item, index) => {
+      if (item.value === filter_type)
+        item.checked = !item.checked;
+      return item;
+    });
+    setLocalStorage('filterItem', currentFilterAction);
+    render('popup_filter div.card', renderPopupFilter(), (e) => {
+      initPopupFilterFunction(_client);
+      $(e).offset({ top: parseInt(getLocalStorage('filter_top', true) || 0) });
+    });
+  });
 }
 
 export function initPopupCreateFunction(_client) {
   addEventClickToElement('.popup_create .fa-times', (e) => { triggerOpenPopupCreate(e, false, _client); });
   addEventClickToElement('.popup_create .item:first-child', openCreateTicket.bind(_client))
 }
-
 
 export function openCreateTicket() {
   let _client = this;

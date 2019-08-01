@@ -9,7 +9,7 @@ window.chartColors = {
     purple: 'rgb(153, 102, 255)',
     grey: 'rgb(201, 203, 207)'
 };
-export function renderWebAccessed() {
+export function renderWebAccessed(leads) {
     return `<div class="card web_access">
             <h5 class="card-header">
               <i class="fas fa-chevron-up showHide pointers"></i> Web accessed
@@ -24,27 +24,34 @@ export function renderWebAccessed() {
                             <i class="fa fa-circle" aria-hidden="true" style='color:green'></i>
                         </div>
                         <div class="col-10 accessed-first">
-                            First accessed 11 days ago at 10:26AM 23 June 2019
+                            <b>First accessed</b><br/>
+                            ${moment(leads.first_web_access_time).fromNow()} <span class='time-gray'>at ${moment(leads.first_web_access_time).format('hh:mm A DD MMMM YYYY')}</span>
                         </div>
                         <div class="col-1">
                             <i class="fa fa-circle" aria-hidden="true" style='color:red'></i>
                         </div>
                         <div class="col-10 accessed-last">
-                            Last accessed 4 minutes ago at 09:25PM July 2019
+                             <b>Last accessed</b><br/>
+                             ${moment(leads.last_web_access_time).fromNow()} <span class='time-gray'>at ${moment(leads.last_web_access_time).format('hh:mm A DD MMMM YYYY')}</span>
                         </div>
-                        <div class="col-4">
-
-                        </div>
-                        <div class="col-8">
+                        <div class="col-1"></div>
+                        <div class="col-10 marginTop8">
                             <a href='#' id='viewDetail'>View detailed log accessed <i class="fas fa-long-arrow-alt-right"></i></a>
                         </div>
-                        <div class="col-12">
+                        <div class="col-1"></div>
+                        <div class="col-11 marginTop8">
                             <div class="c-tag"><span dir="ltr">Seen 10 pages</span></div>
                             <div class="c-tag"><span dir="ltr">Accessed 70 times</span></div>
                         </div>
-                        <div class='col-12'>
-                            <canvas id="visitChart" width="400" height="400"></canvas>
-                            <canvas id="pageViewChart" width="400" height="400"></canvas>
+                        <div class="col-8 marginTop15 gray13">#Total visits 3 days ago </div>
+                        <div class="col-4 marginTop15"> <a href='#'>View more <i class="fas fa-long-arrow-alt-right"></i></a> </div>
+                        <div class='col-12 marginTop8'>
+                            <canvas id="visitChart" width="400" height="200"></canvas>
+                        </div>
+                         <div class="col-8 marginTop15 gray13">#Accessed/page 3 days ago </div>
+                        <div class="col-4 marginTop15"> <a href='#'>View more <i class="fas fa-long-arrow-alt-right"></i></a> </div>
+                        <div class='col-12 marginTop8'>
+                            <canvas id="pageViewChart" width="400" height="200"></canvas>
                         </div>
                     </div>
                 </div>
@@ -108,7 +115,7 @@ export function initChartPageView() {
     var myChart = new Chart(pageViewChart, {
         type: 'horizontalBar',
         data: {
-            labels: ["anycar.vn/ford/ranger-n 1808 (10)", "anycar.vn/need-to-sell-card (8)", "anycar.vn/contact-us (5)", "anycar.vn/showroom-hanoi (4)", "anycar.vn (3)"],
+            labels: ["anycar.vn/ford/ranger-n..", "anycar.vn/need-to-sell-card", "anycar.vn/contact-us", "anycar.vn/showroom-hanoi", "anycar.vn"],
             datasets: [
                 {
                     label: '#Page view',
@@ -137,12 +144,14 @@ export function initChartPageView() {
                 }],
             },
             legend: { display: false },
+            maintainAspectRatio: false,
             tooltips: {
                 callbacks: {
                     title: function (tooltipItems, data) {
                         var idx = tooltipItems[0].index;
                         var title = data.labels[idx];
-                        return `${title}: ${(tooltipItems[0].xLabel, 2)}`
+                        // return `${title}: ${(tooltipItems[0].xLabel, 2)}`
+                        return title
                     },
                     label: function (tooltipItem, data) {
                         return '';
@@ -150,16 +159,30 @@ export function initChartPageView() {
                 }
             },
             plugins: {
-                labels: {
-                    render: function (args) {
-                        // args will be something like:
-                        // { label: 'Label', value: 123, percentage: 50, index: 0, dataset: {...} }
-                        return '$' + args.labels;
-                        // return object if it is image
-                        // return { src: 'image.png', width: 16, height: 16 };
+                datalabels: {
+                    align: 'end',
+                    clamp: true,
+                    clip: true,
+                    anchor: 'start',
+                    display: 'auto',
+                    textAlign: 'end',
+                    color: "#000",
+                    // padding: {
+                    //     top: -20,
+                    //     bottom: 0,
+                    // },
+                    font: function (context) {
+                        var w = context.chart.width;
+                        return {
+                            size: w < 512 ? 12 : 14
+                        }
+                    },
+                    formatter: function (value, context) {
+                        //return value
+                        return context.chart.data.labels[context.dataIndex] + `(${value})`;
                     }
                 }
-            },
+            }
         }
     });
 };
@@ -173,19 +196,21 @@ export function initWebAccessedFunction() {
 }
 
 export function openAccessLog() {
-    let self = this;
-    return self._client.invoke('instances.create', {
+    let _client = this._client;
+    let o2oApi = this.o2oApi;
+    return _client.invoke('instances.create', {
         location: 'modal',
         url: 'assets/iframe.html',
         size: {
-            width: '500px',
+            width: '520px',
             height: '600px'
         }
     }).then(function (modalContext) {
         var instanceGuid = modalContext['instances.create'][0].instanceGuid;
-        var modalClient = self._client.instance(instanceGuid);
+        var modalClient = _client.instance(instanceGuid);
         setTimeout(() => {
-            modalClient.trigger('template_getting_type', { type: 'web_access_log', parentGuid: self._client.instanceGuid });
+            var passParams = { type: 'web_access_log', parentGuid: _client._instanceGuid, o2oApi: o2oApi };
+            modalClient.trigger('template_getting_type', passParams);
         }, 500);
     });
 }

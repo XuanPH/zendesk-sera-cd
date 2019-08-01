@@ -29,7 +29,8 @@
       "name": "O2O-Token",
       "type": "text",
       "required": true,
-      "secure": false
+      "secure": false,
+      "default": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SWQiOiI1YjY3ZWRhYjk2NWVhZjAwMGQ0NDZhOGUifQ.azNGGWiqW0EKDZZOWQFO_44zFbKC_uw7v-4-R3_cD0E"
     }
   ],
   "version": "1.0",

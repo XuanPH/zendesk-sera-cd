@@ -117,7 +117,6 @@ export function ticketCreateModal(data, client) {
 }
 async function getAssigneeList(client) {
     var user = await getGroup(client._parentClient);
-    console.log(user);
 }
 export function initCreateTicketFunction(client) {
     addEventClickToElement('div.create_ticket label.tab', (e) => {
@@ -125,7 +124,6 @@ export function initCreateTicketFunction(client) {
         var textTarget = $('div.create_ticket textarea#content_note');
         $("label.tab").each((i, el) => { $(el).removeClass('active') });
         target.addClass('active');
-        debugger;
         if (target[0].id === 'internal_note') {
             textTarget.addClass('active');
         } else {
@@ -145,3 +143,5 @@ export function initCreateTicketFunction(client) {
     });
     addEventClickToElement('#closeModal', (e) => { client.invoke('destroy'); });
 }
+
+//////////////////////////////////////////////////////////////////////////////////////

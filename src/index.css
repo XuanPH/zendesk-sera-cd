@@ -1,4 +1,7 @@
 /* common css */
+body {
+  font-family: "Roboto", sans-serif;
+}
 
 .loader {
   left: 50%;
@@ -11,24 +14,25 @@
 .main {
   margin-right: 10px;
 }
-footer {
-  font-size: 11px;
-  padding-top: 20px;
-}
+
 .data {
   color: #363;
   padding-left: 6px;
 }
+
 #content td {
-  font-size: 11px;
+  font-size: 12px;
   padding-top: 2px;
 }
+
 .card .card-header {
-  font-size: 12px !important;
+  font-size: 14px !important;
 }
+
 .card .card-body {
   padding: 1.25rem 0;
 }
+
 .avatar {
   vertical-align: middle;
   width: 70px;
@@ -37,28 +41,35 @@ footer {
   border-radius: 50%;
   object-fit: cover;
 }
+
 span {
-  font-size: 11px;
+  font-size: 12px;
 }
+
 span.info-name {
   font-size: 15px !important;
   font-weight: bold;
 }
+
 .customer-info .col-2 {
   padding: 0 !important;
 }
+
 .customer-info .col-3 {
   padding-right: 0 !important;
   padding-left: 6px !important;
 }
+
 button {
   font-size: 11px !important;
 }
+
 div.loading {
   position: relative;
   height: 400px;
   background: #f2f2f240;
 }
+
 embed.loading {
   position: absolute;
   left: 50%;
@@ -66,12 +77,15 @@ embed.loading {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
 .header-righ {
   float: right;
 }
+
 .header-righ i.fa-plus {
   margin-left: 20px;
 }
+
 .card {
   border-bottom: none;
   border-radius: 0;
@@ -79,20 +93,16 @@ embed.loading {
 }
 
 .c-tag span {
-  font-size: 10px;
-}
-.c-tag {
-  margin: 2px 1px !important;
-}
-.pointer {
-  cursor: pointer;
+  font-size: 12px;
 }
 
-/* customer care info css */
-div.customer_care_info div,
-b,
-i {
-  font-size: 11px;
+.c-tag {
+  margin: 2px 5px !important;
+  font-weight: 100;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 .text-right {
@@ -102,22 +112,40 @@ i {
 span.badge.open {
   background: rgb(227, 79, 50);
 }
+
 span.badge.pending {
   background: rgb(48, 145, 236);
 }
+
 span.badge.new {
   background: rgb(255, 182, 72);
 }
+
 .select2-results span,
 .select2-results li {
   font-size: 13px !important;
 }
+
+.marginTop15 {
+  margin-top: 15px;
+}
+
+.marginTop8 {
+  margin-top: 8px;
+}
+
+.gray13 {
+  color: #403c3c;
+  font-size: 13px;
+}
+
 /* ================================================= module css zone =================================================== */
 /* customer care info css */
+/* customer care info css */
 div.customer_care_info div,
-b,
-i {
-  font-size: 11px;
+div.customer_care_info b,
+div.customer_care_info i {
+  font-size: 12px;
 }
 
 .text-right {
@@ -128,9 +156,12 @@ i {
 
 /* web accessed css */
 div.web_access .accessed-first,
-.accessed-last,
+div.web_access .accessed-last,
 a {
-  font-size: 10px;
+  font-size: 12px;
+}
+div.web_access span.time-gray {
+  color: #969696;
 }
 
 /* popup content */
@@ -186,7 +217,7 @@ ul.timeline:before {
   z-index: 400;
 }
 ul.timeline p {
-  font-size: 10px;
+  font-size: 12px;
 }
 ul.timeline > li {
   margin: 0px 0;
@@ -231,6 +262,21 @@ div.modal_detail b {
   padding: 0px 15px;
 }
 
+.modal_detail .page-link {
+  padding: 0.26rem 0.75rem !important;
+}
+
+.modal_detail .page-input {
+  padding: 0.12rem 0.75rem;
+}
+
+.modal_detail .page-label {
+  padding: 0.3rem 0rem;
+}
+
+.modal_detail div.card-body hr:last-child {
+  display: none;
+}
 /* create ticket css */
 
 div.create_ticket {

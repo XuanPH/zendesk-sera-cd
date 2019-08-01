@@ -1,13 +1,10 @@
-/**
- * Resize App container
- * @param {ZAFClient} client ZAFClient object
- * @param {Number} max max height available to resize to
- * @return {Promise} will resolved after resize
- */
+
+
 export function resizeContainer(client, max = Number.POSITIVE_INFINITY, ignoreMax = false) {
   const newHeight = !ignoreMax ? Math.max(document.body.clientHeight, max) : document.body.clientHeight
   return client.invoke('resize', { height: newHeight })
 }
+
 
 /**
  * Helper to render a dataset using the same template function
@@ -33,7 +30,7 @@ export function render(replacedNodeSelector, htmlString, callback) {
   const replacedNode = document.querySelector(replacedNodeSelector)
 
   replacedNode.parentNode.replaceChild(fragment, replacedNode)
-  callback && callback();
+  callback && callback(replacedNode);
 }
 
 /**
@@ -146,4 +143,44 @@ export function goToByScroll(id) {
   $('html,body').animate({
     scrollTop: $("#" + id).offset().top
   }, 'slow');
+}
+
+export function setLocalStorage(key, data) {
+  if (data) {
+    var dataS = JSON.stringify(data);
+    localStorage.setItem(key, dataS);
+  }
+}
+
+export function getLocalStorage(key, getAndRemove = false) {
+  var data = localStorage.getItem(key);
+  if (data) {
+    var jdata = JSON.parse(data);
+    getAndRemove && localStorage.removeItem(key);
+    return jdata;
+  }
+  return null;
+}
+
+export function isNullOrTempty(data, replaceTrue = '', repaceFalse = '') {
+  if (!data || data === '' || data === null) return repaceFalse;
+  if (replaceTrue === '') return data;
+  return replaceTrue;
+}
+
+export function substrByNum(str, number, defaultLastPrefix = "...") {
+  if (str.length > number) {
+    return `${str.substr(0, number)}${defaultLastPrefix}`
+  }
+  return str
+}
+
+export function renderLoading(insideContent = false, selector = '', ) {
+  if (insideContent) {
+    $(selector).html('');
+    $(selector).html(`<div style='height: 100px;'><img class="loader" style='top: 30%;' src="spinner.gif" /></div>`);
+  } else {
+    return `<div style='height: 100px;'><img class="loader" style='top: 30%;' src="spinner.gif" /></div>`
+  }
+
 }
